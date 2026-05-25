@@ -327,6 +327,22 @@ input[type="text"]{
 .btn-imprimir:hover{
   background:#16a34a;
 }
+
+
+.btn-txt{
+  background:#3b82f6;
+  color:white;
+  border:none;
+  padding:6px 10px;
+  border-radius:5px;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.btn-txt:hover{
+  background:#2563eb;
+}
   </style>
 </head>
 <body>
@@ -452,7 +468,7 @@ input[type="text"]{
     agora.toLocaleTimeString("pt-BR");
 
   const aposta = {
-    id: Date.now(),
+    id: crypto.randomUUID(),
     nome,
     dataHora,
     palpites
@@ -498,14 +514,19 @@ input[type="text"]{
           <div class="acoes-aposta">
 
   <button class="btn-imprimir"
-    onclick="imprimirAposta(${aposta.id})">
+    onclick="imprimirAposta('${aposta.id}')">
     Imprimir
   </button>
 
   <button class="btn-excluir"
-    onclick="excluirAposta(${aposta.id})">
+    onclick="excluirAposta('${aposta.id}')">
     Excluir
   </button>
+  
+  <button class="btn-txt"
+  onclick="baixarTXT('${aposta.id}')">
+  TXT
+</button>
 
 </div>
         </div>
@@ -567,7 +588,7 @@ input[type="text"]{
 
   let apostas = JSON.parse(localStorage.getItem("bolao")) || [];
 
-  apostas = apostas.filter(a => a.id !== id);
+  apostas = apostas.filter(a => String(a.id) !== String(id));
 
   localStorage.setItem("bolao", JSON.stringify(apostas));
 
@@ -701,6 +722,60 @@ function imprimirAposta(id){
   janela.document.close();
 
   janela.print();
+}
+
+function baixarTXT(id){
+
+  let apostas = JSON.parse(localStorage.getItem("bolao")) || [];
+  const aposta = apostas.find(a => a.id === id);
+  if(!aposta) return;
+
+  const linha = "----------------------------------------";
+
+  let conteudo = "";
+
+  conteudo += "        ⚽ BOLÃO DA COPA ⚽\n";
+  conteudo += linha + "\n\n";
+
+  conteudo += `APOSTADOR: ${aposta.nome}\n`;
+  conteudo += `DATA/HORA : ${aposta.dataHora}\n`;
+  conteudo += linha + "\n\n";
+
+  conteudo += "JOGOS E PALPITES\n\n";
+
+  aposta.palpites.forEach((p, i) => {
+
+    const time1 = p.time1.padEnd(18, " ").substring(0,18);
+    const time2 = p.time2.padEnd(18, " ").substring(0,18);
+    const placar = `${p.placar1} x ${p.placar2}`;
+
+    conteudo += `${time1}  ${placar}  ${time2}\n`;
+  });
+
+  conteudo += "\n" + linha + "\n";
+  conteudo += "         BOA SORTE 🍀\n";
+  conteudo += linha + "\n";
+
+  const blob = new Blob([conteudo], {
+    type: "text/plain;charset=utf-8"
+  });
+
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+
+  const nomeArquivo = aposta.nome
+    .replace(/[^\w\s]/gi, "")
+    .replace(/\s+/g, "_");
+
+  const dataFormatada = aposta.dataHora
+  .replace(/\//g, "-")
+  .replace(/:/g, "-");
+
+link.download = `${nomeArquivo}_${dataFormatada}.txt`;
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
 </script>
 
