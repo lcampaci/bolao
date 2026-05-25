@@ -306,6 +306,27 @@ input[type="text"]{
 .btn-excluir:hover{
   background:#dc2626;
 }
+
+
+.acoes-aposta{
+  display:flex;
+  gap:5px;
+}
+
+.btn-imprimir{
+  background:#22c55e;
+  color:white;
+  border:none;
+  padding:6px 10px;
+  border-radius:5px;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.btn-imprimir:hover{
+  background:#16a34a;
+}
   </style>
 </head>
 <body>
@@ -474,10 +495,19 @@ input[type="text"]{
             <small>${aposta.dataHora}</small>
           </div>
 
-          <button class="btn-excluir"
-            onclick="excluirAposta(${aposta.id})">
-            Excluir
-          </button>
+          <div class="acoes-aposta">
+
+  <button class="btn-imprimir"
+    onclick="imprimirAposta(${aposta.id})">
+    Imprimir
+  </button>
+
+  <button class="btn-excluir"
+    onclick="excluirAposta(${aposta.id})">
+    Excluir
+  </button>
+
+</div>
         </div>
 
         <table class="tabela-apostas">
@@ -543,7 +573,136 @@ input[type="text"]{
 
   mostrarApostas();
 }
-  </script>
+
+
+function imprimirAposta(id){
+
+  let apostas = JSON.parse(localStorage.getItem("bolao")) || [];
+
+  const aposta = apostas.find(a => a.id === id);
+
+  if(!aposta) return;
+
+  let linhas = "";
+
+  aposta.palpites.forEach(p => {
+
+    linhas += `
+      <div class="linha">
+        <span>${p.time1}</span>
+        <strong>${p.placar1}x${p.placar2}</strong>
+        <span>${p.time2}</span>
+      </div>
+    `;
+  });
+
+  let conteudo = `
+    <html>
+    <head>
+      <title>Cupom</title>
+
+      <style>
+
+        *{
+          box-sizing:border-box;
+        }
+
+        body{
+          font-family: monospace;
+          width: 280px;
+          margin:0 auto;
+          padding:10px;
+          color:#000;
+        }
+
+        .topo{
+          text-align:center;
+          border-bottom:1px dashed #000;
+          padding-bottom:8px;
+          margin-bottom:8px;
+        }
+
+        .titulo{
+          font-size:18px;
+          font-weight:bold;
+        }
+
+        .info{
+          font-size:12px;
+          margin-top:5px;
+          line-height:1.5;
+        }
+
+        .linha{
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          font-size:12px;
+          padding:4px 0;
+          border-bottom:1px dotted #999;
+          gap:5px;
+        }
+
+        .linha span{
+          width:40%;
+          overflow:hidden;
+          white-space:nowrap;
+          text-overflow:ellipsis;
+        }
+
+        .linha strong{
+          width:20%;
+          text-align:center;
+          font-size:13px;
+        }
+
+        .rodape{
+          margin-top:10px;
+          text-align:center;
+          font-size:11px;
+          border-top:1px dashed #000;
+          padding-top:8px;
+        }
+
+        @media print{
+          body{
+            width:100%;
+          }
+        }
+
+      </style>
+    </head>
+
+    <body>
+
+      <div class="topo">
+        <div class="titulo">BOLÃO DA COPA</div>
+
+        <div class="info">
+          Apostador: ${aposta.nome}<br>
+          ${aposta.dataHora}
+        </div>
+      </div>
+
+      ${linhas}
+
+      <div class="rodape">
+        Boa sorte 🍀
+      </div>
+
+    </body>
+    </html>
+  `;
+
+  const janela = window.open("", "", "width=320,height=600");
+
+  janela.document.write(conteudo);
+
+  janela.document.close();
+
+  janela.print();
+}
+</script>
 
 </body>
 </html>
