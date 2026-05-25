@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bolão da Copa</title>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body{
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+      min-height: 100vh;
+      padding: 30px;
+    }
+
+    .container{
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    h1{
+      text-align:center;
+      margin-bottom: 30px;
+      font-size: 2.5rem;
+      color: #38bdf8;
+    }
+
+    .card{
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .campo{
+      margin-bottom: 20px;
+    }
+
+    label{
+      display:block;
+      margin-bottom: 8px;
+      font-weight:bold;
+    }
+
+    input[type="text"]{
+      width:100%;
+      padding:12px;
+      border:none;
+      border-radius:8px;
+      font-size:16px;
+    }
+
+    /* LISTA DE JOGOS MAIS COMPACTA */
+
+#listaJogos{
+  display:grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap:4px;
+}
+
+.jogo{
+  display:grid;
+  grid-template-columns: 1fr auto 1fr;
+
+  align-items:center;
+
+  padding:3px 6px;
+
+  background:#334155;
+
+  border-radius:5px;
+
+  min-height:30px;
+}
+
+.time{
+  font-size:12px;
+  font-weight:600;
+  text-align:center;
+  white-space:nowrap;
+}
+
+.placar{
+  display:flex;
+  align-items:center;
+  gap:2px;
+}
+
+.placar span{
+  font-size:12px;
+}
+
+.placar input{
+  width:28px;
+  height:22px;
+
+  border:none;
+  border-radius:4px;
+
+  text-align:center;
+
+  font-size:12px;
+
+  padding:0;
+}
+
+/* reduz espaços gerais */
+.container{
+  max-width:1400px;
+}
+
+.card{
+  padding:12px;
+}
+
+h1{
+  font-size:1.6rem;
+  margin-bottom:12px;
+}
+
+.campo{
+  margin-bottom:10px;
+}
+
+label{
+  margin-bottom:4px;
+  font-size:13px;
+}
+
+input[type="text"]{
+  padding:8px;
+  height:34px;
+}
+
+.btn{
+  margin-top:10px;
+  padding:10px;
+  font-size:14px;
+}
+
+/* celular */
+@media(max-width:900px){
+
+  #listaJogos{
+    grid-template-columns:1fr;
+  }
+
+}
+
+    .resultado{
+      margin-top:25px;
+    }
+
+    .apostador-card{
+      background:#0f172a;
+      padding:15px;
+      border-radius:10px;
+      margin-bottom:15px;
+    }
+
+    .apostador-card h3{
+      color:#38bdf8;
+      margin-bottom:10px;
+    }
+
+    .linha-palpite{
+      margin-bottom:6px;
+      font-size:15px;
+    }
+
+    @media(max-width:700px){
+      .jogo{
+        grid-template-columns: 1fr;
+        text-align:center;
+      }
+    }
+	
+	.tabela-apostas{
+	  width:100%;
+	  border-collapse: collapse;
+	  margin-top:15px;
+	  background:#1e293b;
+	  overflow:hidden;
+	  border-radius:10px;
+	}
+
+	.tabela-apostas th{
+	  background:#38bdf8;
+	  color:#0f172a;
+	  padding:12px;
+	  text-align:center;
+	}
+
+	.tabela-apostas td{
+	  border:1px solid #475569;
+	  padding:10px;
+	  text-align:center;
+	}
+
+	.tabela-apostas tr:nth-child(even){
+	  background:#334155;
+	}
+
+	.tabela-apostas tr:hover{
+	  background:#475569;
+	}
+	
+	.resultado{
+  margin-top:25px;
+}
+
+#apostasSalvas{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:20px;
+}
+
+.apostador-card{
+  background:#0f172a;
+  padding:15px;
+  border-radius:10px;
+  overflow-x:auto;
+}
+
+.tabela-apostas{
+  width:100%;
+  border-collapse: collapse;
+  margin-top:15px;
+  font-size:14px;
+}
+
+.tabela-apostas th{
+  background:#38bdf8;
+  color:#0f172a;
+  padding:8px;
+  text-align:center;
+}
+
+.tabela-apostas td{
+  border:1px solid #475569;
+  padding:6px;
+  text-align:center;
+}
+
+.tabela-apostas tr:nth-child(even){
+  background:#334155;
+}
+
+.tabela-apostas tr:hover{
+  background:#475569;
+}
+
+/* Tablet */
+@media(max-width:1100px){
+  #apostasSalvas{
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Celular */
+@media(max-width:700px){
+  #apostasSalvas{
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.topo-aposta{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:8px;
+  gap:10px;
+}
+
+.topo-aposta h3{
+  margin:0;
+  font-size:16px;
+  color:#38bdf8;
+}
+
+.topo-aposta small{
+  color:#cbd5e1;
+  font-size:11px;
+}
+
+.btn-excluir{
+  background:#ef4444;
+  color:white;
+  border:none;
+  padding:6px 10px;
+  border-radius:5px;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.btn-excluir:hover{
+  background:#dc2626;
+}
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <h1>⚽ Bolão da Copa</h1>
+
+    <div class="card">
+
+      <div class="campo">
+        <label>Nome do Apostador</label>
+        <input type="text" id="nome" placeholder="Digite seu nome">
+      </div>
+
+      <div id="listaJogos"></div>
+
+      <button class="btn" onclick="salvarPalpite()">
+        Salvar Palpite
+      </button>
+
+    </div>
+
+    <div class="resultado">
+      <h2 style="margin-bottom:20px;">Apostas Registradas</h2>
+
+      <div id="apostasSalvas"></div>
+    </div>
+
+  </div>
+
+  <script>
+    const jogos = [
+  // 11/jun
+  ["México", "África do Sul"],
+  ["Coreia do Sul", "R. Tcheca"],
+
+  // 12/jun
+  ["Canadá", "Bósnia"],
+  ["EUA", "Paraguai"],
+
+  // 13/jun
+  ["Catar", "Suíça"],
+  ["Brasil", "Marrocos"],
+  ["Haiti", "Escócia"],
+
+  // 14/jun
+  ["Áustria", "Turquia"],
+  ["Alemanha", "Curaçao"],
+  ["Holanda", "Japão"],
+  ["Costa do M.", "Equador"],
+  ["Suécia", "Tunísia"],
+
+  // 15/jun
+  ["Espanha", "Cabo Verde"],
+  ["Bélgica", "Egito"],
+  ["Arábia Saud.", "Uruguai"],
+  ["Irã", "Nova Zel."],
+
+  // 16/jun
+  ["França", "Senegal"],
+  ["Iraque", "Noruega"],
+  ["Argentina", "Argélia"],
+
+  // 17/jun
+  ["Austrália", "Jordânia"],
+  ["Portugal", "Congo"],
+  ["Inglaterra", "Croácia"],
+  ["Gana", "Panamá"],
+  ["Uzbequistão", "Colômbia"]
+];
+
+    const listaJogos = document.getElementById("listaJogos");
+
+    jogos.forEach((jogo, index) => {
+
+      listaJogos.innerHTML += `
+        <div class="jogo">
+
+          <div class="time">${jogo[0]}</div>
+
+          <div class="placar">
+            <input type="number" min="0" id="g1-${index}">
+            <span>x</span>
+            <input type="number" min="0" id="g2-${index}">
+          </div>
+
+          <div class="time">${jogo[1]}</div>
+
+        </div>
+      `;
+    });
+
+    function salvarPalpite(){
+
+  const nome = document.getElementById("nome").value;
+
+  if(nome.trim() === ""){
+    alert("Digite o nome do apostador!");
+    return;
+  }
+
+  let palpites = [];
+
+  jogos.forEach((jogo, index) => {
+
+    const gols1 = document.getElementById(`g1-${index}`).value || 0;
+    const gols2 = document.getElementById(`g2-${index}`).value || 0;
+
+    palpites.push({
+      time1: jogo[0],
+      time2: jogo[1],
+      placar1: gols1,
+      placar2: gols2
+    });
+
+  });
+
+  const agora = new Date();
+
+  const dataHora =
+    agora.toLocaleDateString("pt-BR") + " " +
+    agora.toLocaleTimeString("pt-BR");
+
+  const aposta = {
+    id: Date.now(),
+    nome,
+    dataHora,
+    palpites
+  };
+
+  salvarLocal(aposta);
+
+  mostrarApostas();
+
+  limparFormulario();
+
+  alert("Palpite salvo com sucesso!");
+}
+
+    function salvarLocal(aposta){
+
+      let apostas = JSON.parse(localStorage.getItem("bolao")) || [];
+
+      apostas.push(aposta);
+
+      localStorage.setItem("bolao", JSON.stringify(apostas));
+    }
+
+    function mostrarApostas(){
+
+  const area = document.getElementById("apostasSalvas");
+
+  let apostas = JSON.parse(localStorage.getItem("bolao")) || [];
+
+  area.innerHTML = "";
+
+  apostas.forEach(aposta => {
+
+    let tabela = `
+      <div class="apostador-card">
+
+        <div class="topo-aposta">
+          <div>
+            <h3>${aposta.nome}</h3>
+            <small>${aposta.dataHora}</small>
+          </div>
+
+          <button class="btn-excluir"
+            onclick="excluirAposta(${aposta.id})">
+            Excluir
+          </button>
+        </div>
+
+        <table class="tabela-apostas">
+
+          <thead>
+            <tr>
+              <th>Time 1</th>
+              <th>Placar</th>
+              <th>Time 2</th>
+            </tr>
+          </thead>
+
+          <tbody>
+    `;
+
+    aposta.palpites.forEach(p => {
+
+      tabela += `
+        <tr>
+          <td>${p.time1}</td>
+          <td>${p.placar1} x ${p.placar2}</td>
+          <td>${p.time2}</td>
+        </tr>
+      `;
+    });
+
+    tabela += `
+          </tbody>
+        </table>
+
+      </div>
+    `;
+
+    area.innerHTML += tabela;
+
+  });
+}
+
+    function limparFormulario(){
+
+      document.getElementById("nome").value = "";
+
+      jogos.forEach((jogo, index) => {
+        document.getElementById(`g1-${index}`).value = "";
+        document.getElementById(`g2-${index}`).value = "";
+      });
+
+    }
+
+    mostrarApostas();
+	
+	function excluirAposta(id){
+
+  if(!confirm("Deseja excluir esta aposta?")){
+    return;
+  }
+
+  let apostas = JSON.parse(localStorage.getItem("bolao")) || [];
+
+  apostas = apostas.filter(a => a.id !== id);
+
+  localStorage.setItem("bolao", JSON.stringify(apostas));
+
+  mostrarApostas();
+}
+  </script>
+
+</body>
+</html>
